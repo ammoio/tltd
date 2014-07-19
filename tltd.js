@@ -4,7 +4,7 @@ var handler = require('./handler');
 var config = {
     nickname: 'deiniop',
     channels: ['#deiniop'],
-    oauth: process.env.TWITCH_AUTH
+    oauth: 'process.env.TWITCH_AUTH'
 };
 
 var client = new irc.connect(config, function (err, event) {
@@ -12,6 +12,7 @@ var client = new irc.connect(config, function (err, event) {
         console.log(err);
         return;
     }
+
     // "Connected" event.
     event.on('connected', function () {
         console.log('CONNECTED');
