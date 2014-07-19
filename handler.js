@@ -24,7 +24,7 @@ tessel.findTessel(null, true, function(err, client) {
             }, 200);
             client.stop();
           });
- 
+
           client.once('script-stop', function (code) {
             client.close(function () {
               process.exit(code);
@@ -50,31 +50,39 @@ var handleMessage = function (message) {
         }
 
         case 'forwardright':
-        case 'fr': {
+        case 'fr':
+        case 'right': {
             sendMessage('forwardRight');
             break;
         }
 
         case 'forwardleft':
-        case 'fl': {
+        case 'fl':
+        case 'left': {
             sendMessage('forwardLeft');
             break;
         }
 
         case 'reverse':
-        case 'r': {
+        case 'r':
+        case 'back':
+        case 'b': {
             sendMessage('reverse');
             break;
         }
 
         case 'reverseright':
-        case 'rr': {
+        case 'rr':
+        case 'backright':
+        case 'br': {
             sendMessage('reverseRight');
             break;
         }
 
         case 'reverseleft':
-        case 'rl': {
+        case 'rl':
+        case 'backleft':
+        case 'bl': {
             sendMessage('reverseLeft');
             break;
         }
