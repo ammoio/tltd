@@ -1,5 +1,3 @@
-var tessel = require('tessel'); // import tessel
-var gpio = tessel.port['GPIO']; // select the GPIO port
 // vim:ts=4:sts=4:sw=4:
 /*!
  *
@@ -27,8 +25,9 @@ var gpio = tessel.port['GPIO']; // select the GPIO port
  * limitations under the License.
  *
  */
+var q;
 
-var q = (function (definition) {
+(function (definition) {
     // Turn off strict mode for this function so we can assign to global.Q
     /* jshint strict: false */
 
@@ -43,7 +42,7 @@ var q = (function (definition) {
 
     // CommonJS
     } else if (typeof exports === "object") {
-        module.exports = definition();
+        q = definition();
 
     // RequireJS
     } else if (typeof define === "function" && define.amd) {
@@ -1905,6 +1904,9 @@ return Q;
 
 });
 
+var tessel = require('tessel'); // import tessel
+var gpio = tessel.port['GPIO']; // select the GPIO port
+
 var commands = [];
 
 var portMap = {
@@ -1914,7 +1916,7 @@ var portMap = {
     'left': 'G1'    //green
 };
 
-var DEFAULT_DURATION = 100,
+var DEFAULT_DURATION = 150,
     PRE_TURN_DELAY = 100; //ms
 
 // initialize all pins to off
@@ -1923,24 +1925,27 @@ var DEFAULT_DURATION = 100,
 });
 
 var move = function (forwardOrBack, leftOrRight) {
+    console.log(forwardOrBack, leftOrRight);
     var movePromise = q.defer(),
-        turnPromise;
+        turnPromise = q.defer();
 
     if (leftOrRight) {
-        turnPromise = q.defer();
         gpio.pin[portMap[leftOrRight]].write(true);
         setTimeout(function(){
-            turnPromise.resolve();
+            console.log('resolving');
+            turnPromise.resolve('hi');
         }, PRE_TURN_DELAY);
     } else {
-        turnPromise = q.when();
+        turnPromise.resolve();
     }
 
-    turnPromise.then(function() {
+    turnPromise.promise.then(function() {
         gpio.pin[portMap[forwardOrBack]].write(true);
         setTimeout(function() {
             gpio.pin[portMap[forwardOrBack]].write(false);
-            gpio.pin[portMap[leftOrRight]].write(false);
+            if (leftOrRight) {
+                gpio.pin[portMap[leftOrRight]].write(false);
+            }
             movePromise.resolve();
         }, DEFAULT_DURATION);
     });
