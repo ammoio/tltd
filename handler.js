@@ -1,40 +1,9 @@
-var tessel = require('tessel');
+var linkedList = require('linkedlist');
+var tesselClient = require('./initializeTessel').getTessel();
 var script =  '/tessel.js';
-var myClient;
-
-// creating tessel instance
-tessel.findTessel(null, true, function(err, client) {
-    if (err) throw err;
-    client.run(__dirname + script, ['tessel', script], {
-          single: true,
-        }, function () {
-          client.stdout.resume();
-          client.stdout.pipe(process.stdout);
-          client.stderr.resume();
-          client.stderr.pipe(process.stderr);
-          console.info('Running script...');
-
-          myClient = client;
-
-          // Stop on Ctrl+C.
-          process.on('SIGINT', function() {
-            setTimeout(function () {
-              logs.info('Script aborted');
-              process.exit(131);
-            }, 200);
-            client.stop();
-          });
-
-          client.once('script-stop', function (code) {
-            client.close(function () {
-              process.exit(code);
-            });
-          });
-    });
-});
 
 var sendMessage = function (direction) {
-    myClient.interface.writeProcessMessage({'move': direction});
+    tesselClient.interface.writeProcessMessage({'move': direction});
 };
 
 var handleMessage = function (message) {
