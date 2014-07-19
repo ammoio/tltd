@@ -11,6 +11,7 @@
   "dependencies": {
     "linkedlist": "^1.0.1",
     "node-twitch-irc": "^1.1.1",
+    "q": "^1.0.1",
     "tessel": "^0.3.5"
   }
 }
