@@ -2,9 +2,9 @@ var irc = require('node-twitch-irc');
 var handler = require('./handler');
 
 var config = {
-    nickname: 'deiniop',
-    channels: ['#deiniop'],
-    oauth: 'process.env.TWITCH_AUTH'
+    nickname: 'twitchlearnstodrive',
+    channels: ['#twitchlearnstodrive'],
+    oauth: process.env.TWITCH_AUTH
 };
 
 var client = new irc.connect(config, function (err, event) {
