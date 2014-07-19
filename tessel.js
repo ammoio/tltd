@@ -17,6 +17,11 @@ var DEFAULT_DURATION = 100,
     gpio.pin[pin].write(false);
 });
 
+var done = function () {
+    console.log('done');
+    process.send('done');
+};
+
 var move = function (forwardOrBack, leftOrRight) {
     var movePromise = q.defer(),
         turnPromise;
@@ -36,6 +41,7 @@ var move = function (forwardOrBack, leftOrRight) {
         setTimeout(function() {
             gpio.pin[portMap[forwardOrBack]].write(false);
             gpio.pin[portMap[leftOrRight]].write(false);
+            done();
             movePromise.resolve();
         }, DEFAULT_DURATION);
     });
@@ -48,52 +54,22 @@ var interpretCommand = function (command, duration) {
 
     switch (command) {
         case 'forward':
-            move('forward', true);
-            console.log('moving ' + command);
-            setTimeout(function () {
-                move('forward', false);
-                console.log('stop moving ' + command);
-            }, duration);
+            move('forward');
             break;
         case 'forwardRight':
-            move('forward', true, 'right');
-            console.log('moving ' + command);
-            setTimeout(function () {
-                move('forward', false, 'right');
-                console.log('stop moving ' + command);
-            }, duration);
+            move('forward', 'right');
             break;
         case 'forwardLeft':
-            move('forward', true, 'left');
-            console.log('moving ' + command);
-            setTimeout(function () {
-                move('forward', false, 'left');
-                console.log('stop moving ' + command);
-            }, duration);
+            move('forward', 'left');
             break;
         case 'reverse':
-            move('reverse', true);
-            console.log('moving ' + command);
-            setTimeout(function () {
-                move('reverse', false);
-                console.log('stop moving ' + command);
-            }, duration);
+            move('reverse');
             break;
         case 'reverseRight':
-            move('reverse', true, 'right');
-            console.log('moving ' + command);
-            setTimeout(function () {
-                move('reverse', false, 'right');
-                console.log('stop moving ' + command);
-            }, duration);
+            move('reverse', 'right');
             break;
         case 'reverseLeft':
-            move('reverse', true, 'left');
-            console.log('moving ' + command);
-            setTimeout(function () {
-                move('reverse', false, 'left');
-                console.log('stop moving ' + command);
-            }, duration);
+            move('reverse', 'left');
             break;
     }
 };
