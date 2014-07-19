@@ -19,6 +19,7 @@ var handleMessage = function (message) {
 
         case 'forwardright':
         case 'fr':
+        case 'r':
         case 'right': {
             sendMessage('forwardRight');
             break;
@@ -26,6 +27,7 @@ var handleMessage = function (message) {
 
         case 'forwardleft':
         case 'fl':
+        case 'l':
         case 'left': {
             sendMessage('forwardLeft');
             break;
