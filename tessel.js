@@ -1,25 +1,46 @@
 var tessel = require('tessel'); // import tessel
 var gpio = tessel.port['GPIO']; // select the GPIO port
+var q = require('q');
 
 var portMap = {
     'forward': 'G5', //black
     'right': 'G6',  //red
     'reverse': 'G2',    //white
-    'left': 'G1'    //green      
+    'left': 'G1'    //green
 };
 
-var DEFAULT_DURATION = 100; //ms
+var DEFAULT_DURATION = 100,
+    PRE_TURN_DELAY = 100; //ms
 
 // initialize all pins to off
 ['G1', 'G6', 'G2', 'G5'].forEach(function (pin) {
     gpio.pin[pin].write(false);
 });
 
-var move = function (forwardOrBack, onOrOff, leftOrRight) {
-    gpio.pin[portMap[forwardOrBack]].write(onOrOff);
+var move = function (forwardOrBack, leftOrRight) {
+    var movePromise = q.defer(),
+        turnPromise;
+
     if (leftOrRight) {
-        gpio.pin[portMap[leftOrRight]].write(onOrOff);
+        turnPromise = q.defer();
+        gpio.pin[portMap[leftOrRight]].write(true);
+        setTimeout(function(){
+            turnPromise.resolve();
+        }, PRE_TURN_DELAY);
+    } else {
+        turnPromise = q.when();
     }
+
+    turnPromise.then(function() {
+        gpio.pin[portMap[forwardOrBack]].write(true);
+        setTimeout(function() {
+            gpio.pin[portMap[forwardOrBack]].write(false);
+            gpio.pin[portMap[leftOrRight]].write(false);
+            movePromise.resolve();
+        }, DEFAULT_DURATION);
+    });
+
+    return movePromise.promise;
 };
 
 var interpretCommand = function (command, duration) {
@@ -40,7 +61,7 @@ var interpretCommand = function (command, duration) {
             setTimeout(function () {
                 move('forward', false, 'right');
                 console.log('stop moving ' + command);
-            }, duration);        
+            }, duration);
             break;
         case 'forwardLeft':
             move('forward', true, 'left');
@@ -64,7 +85,7 @@ var interpretCommand = function (command, duration) {
             setTimeout(function () {
                 move('reverse', false, 'right');
                 console.log('stop moving ' + command);
-            }, duration);        
+            }, duration);
             break;
         case 'reverseLeft':
             move('reverse', true, 'left');
@@ -72,7 +93,7 @@ var interpretCommand = function (command, duration) {
             setTimeout(function () {
                 move('reverse', false, 'left');
                 console.log('stop moving ' + command);
-            }, duration);        
+            }, duration);
             break;
     }
 };
@@ -80,5 +101,5 @@ var interpretCommand = function (command, duration) {
 process.on('message', function(msg) {
     interpretCommand(msg.move);
 });
- 
+
 process.ref();
