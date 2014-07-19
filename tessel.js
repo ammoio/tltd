@@ -2,6 +2,8 @@ var tessel = require('tessel'); // import tessel
 var gpio = tessel.port['GPIO']; // select the GPIO port
 var q = require('q');
 
+var commands = [];
+
 var portMap = {
     'forward': 'G5', //black
     'right': 'G6',  //red
@@ -16,11 +18,6 @@ var DEFAULT_DURATION = 100,
 ['G1', 'G6', 'G2', 'G5'].forEach(function (pin) {
     gpio.pin[pin].write(false);
 });
-
-var done = function () {
-    console.log('done');
-    process.send('done');
-};
 
 var move = function (forwardOrBack, leftOrRight) {
     var movePromise = q.defer(),
@@ -41,7 +38,6 @@ var move = function (forwardOrBack, leftOrRight) {
         setTimeout(function() {
             gpio.pin[portMap[forwardOrBack]].write(false);
             gpio.pin[portMap[leftOrRight]].write(false);
-            done();
             movePromise.resolve();
         }, DEFAULT_DURATION);
     });
@@ -54,28 +50,34 @@ var interpretCommand = function (command, duration) {
 
     switch (command) {
         case 'forward':
-            move('forward');
-            break;
+            return move('forward');
         case 'forwardRight':
-            move('forward', 'right');
-            break;
+            return move('forward', 'right');
         case 'forwardLeft':
-            move('forward', 'left');
-            break;
+            return move('forward', 'left');
         case 'reverse':
-            move('reverse');
-            break;
+            return move('reverse');
         case 'reverseRight':
-            move('reverse', 'right');
-            break;
+            return move('reverse', 'right');
         case 'reverseLeft':
-            move('reverse', 'left');
-            break;
+            return move('reverse', 'left');
     }
 };
 
+var nextMove = function () {
+    interpretCommand(commands.shift())
+        .then(function(){
+            if(commands.length) {
+                nextMove();
+            }
+        });
+}
+
 process.on('message', function(msg) {
-    interpretCommand(msg.move);
+    commands.push(msg.move);
+    if(commands.length === 1){
+        nextMove();
+    }
 });
 
 process.ref();
