@@ -1,9 +1,8 @@
 var linkedList = require('linkedlist');
-var tesselClient = require('./initializeTessel').getTessel();
-var script =  '/tessel.js';
+var tessel = require('./initializeTessel');
 
 var sendMessage = function (direction) {
-    tesselClient.interface.writeProcessMessage({'move': direction});
+    tessel.getTessel().interface.writeProcessMessage({'move': direction});
 };
 
 var handleMessage = function (message) {
