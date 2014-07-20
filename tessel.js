@@ -1917,7 +1917,8 @@ var portMap = {
 };
 
 var DEFAULT_DURATION = 150,
-    PRE_TURN_DELAY = 100; //ms
+    PRE_TURN_DELAY = 100,
+    PAUSE_DURATION = 150; //ms
 
 // initialize all pins to off
 ['G1', 'G6', 'G2', 'G5'].forEach(function (pin) {
@@ -1973,11 +1974,17 @@ var interpretCommand = function (command, duration) {
 };
 
 var nextMove = function () {
-    interpretCommand(commands.shift())
+    if (!commands[0]) {
+        return;
+    }
+    interpretCommand(commands[0])
         .then(function(){
-            if(commands.length) {
-                nextMove();
-            }
+            setTimeout(function () {
+                commands.shift();
+                if(commands.length) {
+                    nextMove();
+                }
+            }, PAUSE_DURATION);
         });
 }
 

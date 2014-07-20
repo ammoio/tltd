@@ -34,7 +34,6 @@ var handleMessage = function (message) {
         }
 
         case 'reverse':
-        case 'r':
         case 'back':
         case 'b': {
             sendMessage('reverse');
