@@ -1,5 +1,6 @@
-var irc = require('node-twitch-irc');
+var twitchIrc = require('node-twitch-irc');
 var handler = require('./handler');
+var irc = require('irc');
 
 var config = {
     nickname: 'twitchlearnstodrive',
@@ -7,7 +8,7 @@ var config = {
     oauth: process.env.TWITCH_AUTH
 };
 
-var client = new irc.connect(config, function (err, event) {
+var client = new twitchIrc.connect(config, function (err, event) {
     if (err) {
         console.log(err);
         return;
@@ -35,7 +36,7 @@ var client = new irc.connect(config, function (err, event) {
     });
 });
 
-var irc = require('irc');
+
 var client = new irc.Client('bigcommerce.irc.slack.com', process.env.SLACK_NAME, {
     secure: true,
     userName: process.env.SLACK_NAME, // 'ray.ma',

@@ -6,7 +6,7 @@ var myClient;
 tessel.findTessel(null, true, function(err, client) {
     if (err) throw err;
     client.run(__dirname + script, ['tessel', script], {
-          single: true,
+          single: false,
         }, function () {
           client.stdout.resume();
           client.stdout.pipe(process.stdout);
