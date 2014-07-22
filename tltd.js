@@ -34,3 +34,18 @@ var client = new irc.connect(config, function (err, event) {
         console.log('['+channel+'] <' + from.username + '> ' + message);
     });
 });
+
+var irc = require('irc');
+var client = new irc.Client('bigcommerce.irc.slack.com', process.env.SLACK_NAME, {
+    secure: true,
+    userName: process.env.SLACK_NAME, // 'ray.ma',
+    password: process.env.SLACK_PASSWORD,
+    channel: ['#roadrage']
+});
+
+client.addListener('message#roadrage', function (from, message) {
+    var commands = message.split(' ');
+    commands.forEach(function (command) {
+        handler(command);
+    });
+});

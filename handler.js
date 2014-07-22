@@ -7,7 +7,6 @@ var sendMessage = function (direction) {
 
 var handleMessage = function (message) {
     message = message.toLowerCase();
-
     // Removing spaces so the user can type 'Forward Right' or w/e
     message = message.replace(/\s+/g, '');
     switch (message) {

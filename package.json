@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "irc": "^0.3.7",
     "linkedlist": "^1.0.1",
     "node-twitch-irc": "^1.1.1",
     "q": "^1.0.1",
