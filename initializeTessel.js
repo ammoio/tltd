@@ -1,5 +1,5 @@
 var tessel = require('tessel');
-var script =  '/tessel.js';
+var script =  '/device/tessel.js';
 var myClient;
 
 // creating tessel instance
