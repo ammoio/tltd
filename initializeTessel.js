@@ -2,8 +2,15 @@ var tessel = require('tessel');
 var script =  '/device/tessel.js';
 var myClient;
 
+var opts = {
+  // Stop existing script, if any
+  stop: true,
+  // Serial number (`undefined` picks the first one)
+  serial: process.env.TESSEL_SERIAL,
+};
+
 // creating tessel instance
-tessel.findTessel(null, true, function(err, client) {
+tessel.findTessel(opts, function(err, client) {
     if (err) throw err;
     client.run(__dirname + script, ['tessel', script], {
           single: false,
